@@ -1,0 +1,282 @@
+// Basic Matrix Functions
+
+void initializeMatrix(int rows, int cols, int matrix[][cols], int value)
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			matrix[i][j] = value;
+		}
+	}
+}
+
+void printMatrix(int rows, int cols, int matrix[][cols])
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			printf("%d", matrix[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void inputMatrix(int rows, int cols, int matrix[][cols])
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			printf("\nenter a value for [%d][%d] =>", i, j);
+			scanf("%d", &matrix[i][j]);
+		}
+	}
+}
+
+// Matrix Arithmetic
+
+void addMatrices(int rows, int cols, int mat1[][cols], int mat2[][cols], int result[][cols])
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			result[i][j] = mat1[i][j] + mat2[i][j];
+		}
+	}
+}
+
+void subtractMatrices(int rows, int cols, int mat1[][cols], int mat2[][cols], int result[][cols])
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			result[i][j] = mat1[i][j] - mat2[i][j];
+		}
+	}
+}
+
+
+void multiplyMatrices(int rows1, int cols1, int mat1[rows1][cols1],int rows2, int cols2, int mat2[rows2][cols2],
+                      int result[rows1][cols2]) {
+    for (int i = 0; i < rows1; i++) {
+        for (int j = 0; j < cols2; j++) {
+            result[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < rows1; i++) {
+        for (int j = 0; j < cols2; j++) {
+            for (int k = 0; k < cols1; k++) {
+                result[i][j] += mat1[i][k] * mat2[k][j];
+            }
+        }
+    }
+}
+
+void scalarMultiplyMatrix(int rows, int cols, int matrix[][cols], int scalar)
+{
+	int i, j;
+	for (i = 0; i < rows; i++)
+	{
+		for (j = 0; j < cols; j++)
+		{
+			matrix[i][j] *= scalar;
+		}
+	}
+}
+
+// matrix properties and checks
+
+bool isSquareMatrix(int rows, int cols)
+{
+	return rows == cols;
+}
+
+bool isIdentityMatrix(int size, int matrix[][size])
+{
+	int j , i;
+	for (i = 0; i < size; i++)
+	{
+		for (j = 0; j < size; j++)
+		{
+			if (i == j && matrix[i][j] != 1)
+			{
+				return false;
+			}
+	     	if (i != j && matrix[i][j] != 0)
+	    	{
+	     		return false;
+	    	}
+	   	}
+	}
+	return true;
+}
+
+bool isDiagonalMatrix(int size, int matrix[][size])
+{
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+			if (matrix[i][j] != 0 && i != j)
+				return false;
+	}
+	return true;
+}
+
+bool isSymmetricMatrix(int size, int matrix[][size])
+{
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+			if (matrix[i][j] != matrix[j][i])
+				return false;
+	}
+	return true;
+}
+
+bool isUpperTriangularMatrix(int size, int matrix[][size])
+{
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < i; j++)
+			if (matrix[i][j] != 0)
+				return false;
+	}
+	return true;
+}
+
+// matrix operations
+
+void transposeMatrix(int rows, int cols, int matrix[][cols], int result[][rows])
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			result[j][i] = matrix[i][j];
+		}
+	}
+}
+
+int determinantMatrix(int size , int matrix[][size]) {
+    int det = 0;
+    if (size == 1) {
+        return matrix[0][0];
+    } else if (size == 2) {
+        return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0]);
+    } else {
+        int temp[size][size];
+        for (int p = 0; p < size; p++) {
+3            int subi = 0; // Submatrix row index
+            for (int i = 1; i < size; i++) {
+                int subj = 0; // Submatrix column index
+                for (int j = 0; j < size; j++) {
+                    if (j == p) {
+                        continue;
+                    }
+                    temp[subi][subj] = matrix[i][j];
+                    subj++;
+                }
+                subi++;
+            }
+            det += (p % 2 == 0 ? 1 : -1) * matrix[0][p] * determinantMatrix(size - 1, temp);
+        }
+    }
+    return det;
+}
+
+void inverseMatrix(int size, double matrix[][size], double result[][size]) {
+    double det = determinant(size, matrix);
+    if (det == 0) {
+        printf("The matrix is singular and cannot be inverted.\n");
+        return;
+    }
+
+    double cofactor[size][size];
+    cofactorMatrix(size, matrix,1, cofactor);
+
+    // Transpose the cofactor matrix to get the adjoint
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            result[j][i] = cofactor[i][j] / det;
+        }
+    }
+}
+
+void matrixPower(int size, int matrix[][size], int power, int result[][size])
+{
+	int temp;
+	for (int i; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			temp = matrix[i][j];
+			result[i][j] = pow(temp, power);
+		}
+	}
+}
+
+// Advenced Matrix Functions
+
+void cofactorMatrix(int size, int matrix[][size], int power, int result[][size]) {
+    int minor[size - 1][size - 1];
+
+    for (int row = 0; row < size; row++) {
+        for (int col = 0; col < size; col++) {
+            // Form the minor matrix by excluding current row and column
+            int minorRow = 0;
+            for (int i = 0; i < size; i++) {
+                if (i != row) {
+                    int minorCol = 0;
+                    for (int j = 0; j < size; j++) {
+                        if (j != col) {
+                            minor[minorRow][minorCol] = matrix[i][j];
+                            minorCol++;
+                        }
+                    }
+                    minorRow++;
+                }
+            }
+
+            // Calculate determinant of the minor matrix
+            int det = 0;
+            if (size - 1 == 1) {
+                det = minor[0][0]; // Base case for 1x1 matrix
+            } else if (size - 1 == 2) {
+                // Base case for 2x2 matrix determinant
+                det = minor[0][0] * minor[1][1] - minor[0][1] * minor[1][0];
+            } else {
+                // Recursive case (can expand here if needed for larger minors)
+                det = 0; // Placeholder, expand determinant recursion for higher sizes
+            }
+
+            // Calculate cofactor with sign adjustment
+            int cofactor = ((row + col) % 2 == 0 ? 1 : -1) * det;
+
+            // Raise cofactor to the specified power
+            result[row][col] = (int)pow(cofactor, power);
+        }
+    }
+}
+
+// Special Matrix Operations
+
+int traceMatrix(int size, int matrix[][size])
+{
+	int trace = 0;
+	for (int i = 0; i < size; i++)
+	{
+		trace += matrix[i][i];
+	}
+	return trace;
+}
+void rotateMatrix90(int size, int matrix[][size]) {
