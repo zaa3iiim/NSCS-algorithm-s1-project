@@ -212,17 +212,33 @@ void inverseMatrix(int size, double matrix[][size], double result[][size]) {
     }
 }
 
-void matrixPower(int size, int matrix[][size], int power, int result[][size])
-{
-	int temp;
-	for (int i; i < size; i++)
-	{
-		for (int j = 0; j < size; j++)
-		{
-			temp = matrix[i][j];
-			result[i][j] = pow(temp, power);
-		}
-	}
+void matrixPower(int size, int matrix[][size], int power, int result[][size]) {
+    if (power < 0) {
+        printf("Negative powers are not supported.\n");
+        return;
+    }
+
+    // Initialize result to identity matrix
+    initializeIdentityMatrix(size, result);
+
+    if (power == 0) {
+        return; // Identity matrix is already set
+    }
+
+    int temp[size][size];
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            temp[i][j] = matrix[i][j];
+        }
+    }
+
+    while (power > 0) {
+        if (power % 2 == 1) {
+            multiplyMatrices(size, result, temp, result);
+        }
+        multiplyMatrices(size, temp, temp, temp); // Square the matrix
+        power /= 2;
+    }
 }
 
 // Advenced Matrix Functions
