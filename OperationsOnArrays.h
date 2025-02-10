@@ -262,7 +262,7 @@ void bubbleSort(int arr[], int size)
 	do
 	{
 		swp = false;
-		for (i = 0; i < size - 1; i++)
+		for (i = 0; i < size -1; i++)
 		{
 			if (arr[i] > arr[i + 1])
 			{
@@ -270,6 +270,7 @@ void bubbleSort(int arr[], int size)
 				swp = true;
 			}
 		}
+	    size --;
 	} while (swp); // repeat the prosses untill no swap is done
 }
 void selectionSort(int arr[], int size)
