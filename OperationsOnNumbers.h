@@ -344,20 +344,24 @@ void pascalTriangle(int num)
 
 bool isKaprekar(int num)
 {
-    if (num < 1)
+    if (num == 1) return true; // 1 is a Kaprekar number
+
+    long long square = (long long) num * num; // Compute square
+    int numDigits = (int) log10(square) + 1;  // Count digits in square
+
+    for (int d = 1; d < numDigits; d++)
     {
-        return false; // Numbers less than 1 cannot be Kaprekar numbers
+        long long divisor = (long long) pow(10, d);
+        long long left = square / divisor;
+        long long right = square % divisor;
+
+        if (right > 0 && left + right == num)
+        {
+            return true; // Kaprekar number found
+        }
     }
 
-    long square = (long)num * num;
-    int numDigits = (int)log10(num) + 1;
-    long divisor = (long)pow(10, numDigits);
-
-    long s1 = square / divisor;
-    long s2 = square % divisor;
-
-    // Ensure s2 is non-zero to prevent leading zero issues
-    return (s1 + s2 == num) && (s2 != 0);
+    return false; // Not a Kaprekar number
 }
 
 bool isSmith(int num)
